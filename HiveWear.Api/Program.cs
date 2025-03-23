@@ -1,12 +1,14 @@
-var builder = WebApplication.CreateBuilder(args);
+using HiveWear.Application.Extensions;
+using HiveWear.Infrastructure.Extensions;
+
+WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-
 builder.Services.AddControllers();
+builder.Services.AddApplication();
+builder.Services.AddInfrastructure();
 
-var app = builder.Build();
-
-// Configure the HTTP request pipeline.
+WebApplication app = builder.Build();
 
 app.UseHttpsRedirection();
 

@@ -7,11 +7,12 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Controllers\" />
+    <PackageReference Include="MediatR" Version="12.4.1" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="MediatR" Version="12.4.1" />
+    <ProjectReference Include="..\HiveWear.Application\HiveWear.Application.csproj" />
+    <ProjectReference Include="..\HiveWear.Infrastructure\HiveWear.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>
