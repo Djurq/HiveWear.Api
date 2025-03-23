@@ -3,6 +3,7 @@ using HiveWear.Application.Clothing.Queries;
 using HiveWear.Domain.Models;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace HiveWear.Api.Controllers
 {
@@ -53,6 +54,26 @@ namespace HiveWear.Api.Controllers
             bool deletedItem = await _mediator.Send(new DeleteClothingItemCommand(id)).ConfigureAwait(false);
 
             return Ok(deletedItem);
+        }
+
+        [HttpPost]
+        [Route("upload")]
+        public async Task<IActionResult> UploadClothingItemWithImage([FromForm] IFormFile file, ClothingItem? clothingItem)
+        {
+            if (file == null || file.Length == 0)
+            {
+                return BadRequest("No file uploaded");
+            }
+
+            if (clothingItem is null)
+            {
+                return BadRequest("No clothing item uploaded");
+            }
+
+
+            var savedClothingItem = await _mediator.Send(new AddClothingItemCommand(clothingItem)).ConfigureAwait(false);
+
+            return Ok();
         }
     }
 }
