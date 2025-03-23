@@ -1,5 +1,6 @@
 ﻿using HiveWear.Application.Clothing.Commands;
 using HiveWear.Application.Clothing.Queries;
+using HiveWear.Application.Images.Commands;
 using HiveWear.Domain.Models;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -70,6 +71,9 @@ namespace HiveWear.Api.Controllers
                 return BadRequest("No clothing item uploaded");
             }
 
+            string path = await _mediator.Send(new UploadImageCommand(file.OpenReadStream())).ConfigureAwait(false);
+
+            clothingItem.ImagePath = path;
 
             ClothingItem savedClothingItem = await _mediator.Send(new AddClothingItemCommand(clothingItem)).ConfigureAwait(false);
 
