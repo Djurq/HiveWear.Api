@@ -8,7 +8,7 @@ namespace HiveWear.Infrastructure.Database
     {
         public DbSet<ClothingItem> ClothingItems { get; set; }
 
-        public override int SaveChanges()
+        public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
         {
             List<EntityEntry> entries = [.. ChangeTracker.Entries().Where(e => e.Entity is ClothingItem)];
 
@@ -25,7 +25,9 @@ namespace HiveWear.Infrastructure.Database
                 }
             }
 
-            return base.SaveChanges();
+            // Call base SaveChangesAsync
+            return await base.SaveChangesAsync(cancellationToken);
         }
+
     }
 }

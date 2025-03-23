@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace HiveWear.Infrastructure.Migrations
 {
     [DbContext(typeof(HiveWearDbContext))]
-    [Migration("20250323114009_add-extraproperties-ClothingItem")]
-    partial class addextrapropertiesClothingItem
+    [Migration("20250323120310_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

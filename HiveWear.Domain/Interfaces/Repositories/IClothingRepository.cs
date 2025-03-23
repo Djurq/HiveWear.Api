@@ -7,7 +7,7 @@ namespace HiveWear.Domain.Interfaces.Repositories
         Task<IEnumerable<ClothingItem>> GetAllClothingItemsAsync();
         Task<ClothingItem> AddClothingItemAsync(ClothingItem clothingItem);
         Task<ClothingItem> UpdateClothingItemAsync(ClothingItem clothingItem);
-        Task<ClothingItem?> DeleteClothingItemAsync(int id);
+        Task<bool> DeleteClothingItemAsync(int id);
         Task<ClothingItem?> GetClothingItemByIdAsync(int id);
     }
 }

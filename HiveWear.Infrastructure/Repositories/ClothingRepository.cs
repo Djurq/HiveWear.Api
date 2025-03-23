@@ -19,20 +19,20 @@ namespace HiveWear.Infrastructure.Repositories
             return insertedItem.Entity;
         }
 
-        public async Task<ClothingItem?> DeleteClothingItemAsync(int id)
+        public async Task<bool> DeleteClothingItemAsync(int id)
         {
             ClothingItem? clothingItem = await _dbContext.ClothingItems.FindAsync(id).ConfigureAwait(false);
 
             if (clothingItem is null)
             {
-                //TODO: Log that the item was not found and throw an exception
-                return null;
+                return false;
             }
 
             _dbContext.ClothingItems.Remove(clothingItem);
+
             await _dbContext.SaveChangesAsync().ConfigureAwait(false);
 
-            return clothingItem;
+            return true;
         }
 
         public async Task<IEnumerable<ClothingItem>> GetAllClothingItemsAsync()

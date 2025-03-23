@@ -3,6 +3,7 @@ using HiveWear.Infrastructure.Database;
 using HiveWear.Infrastructure.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 
 namespace HiveWear.Infrastructure.Extensions
 {
@@ -18,7 +19,9 @@ namespace HiveWear.Infrastructure.Extensions
 
         private static IServiceCollection AddDatabase(this IServiceCollection services)
         {
-            services.AddDbContext<HiveWearDbContext>(options => options.UseSqlite("Data Source=app.db"));
+            string databasePath = "C:\\Users\\DjurredeJong\\source\\repos\\Djurq\\HiveWear.Api\\HiveWear.Infrastructure\\app.db";
+
+            services.AddDbContext<HiveWearDbContext>(options => options.UseSqlite($"Data Source={databasePath}"));
 
             return services;
         }
