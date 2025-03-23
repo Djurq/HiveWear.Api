@@ -1,6 +1,8 @@
 ﻿using HiveWear.Domain.Interfaces.Repositories;
+using HiveWear.Domain.Interfaces.Services;
 using HiveWear.Infrastructure.Database;
 using HiveWear.Infrastructure.Repositories;
+using HiveWear.Infrastructure.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
@@ -13,6 +15,7 @@ namespace HiveWear.Infrastructure.Extensions
         {
             services.AddTransient<IClothingRepository, ClothingRepository>();
             services.AddDatabase();
+            services.AddServices();
 
             return services;
         }
@@ -23,6 +26,12 @@ namespace HiveWear.Infrastructure.Extensions
 
             services.AddDbContext<HiveWearDbContext>(options => options.UseSqlite($"Data Source={databasePath}"));
 
+            return services;
+        }
+
+        private static IServiceCollection AddServices(this IServiceCollection services)
+        {
+            services.AddTransient<IFileStorageService, FileStorageService>();
             return services;
         }
     }

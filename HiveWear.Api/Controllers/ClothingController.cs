@@ -71,9 +71,9 @@ namespace HiveWear.Api.Controllers
             }
 
 
-            var savedClothingItem = await _mediator.Send(new AddClothingItemCommand(clothingItem)).ConfigureAwait(false);
+            ClothingItem savedClothingItem = await _mediator.Send(new AddClothingItemCommand(clothingItem)).ConfigureAwait(false);
 
-            return Ok();
+            return Ok(savedClothingItem);
         }
     }
 }
