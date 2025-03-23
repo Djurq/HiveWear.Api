@@ -4,6 +4,10 @@ namespace HiveWear.Domain.Interfaces.Repositories
 {
     public interface IClothingRepository
     {
-        Task<IEnumerable<ClothingItem>> GetAllAsync();
+        Task<IEnumerable<ClothingItem>> GetAllClothingItemsAsync();
+        Task<ClothingItem> AddClothingItemAsync(ClothingItem clothingItem);
+        Task<ClothingItem> UpdateClothingItemAsync(ClothingItem clothingItem);
+        Task<ClothingItem?> DeleteClothingItemAsync(int id);
+        Task<ClothingItem?> GetClothingItemByIdAsync(int id);
     }
 }
