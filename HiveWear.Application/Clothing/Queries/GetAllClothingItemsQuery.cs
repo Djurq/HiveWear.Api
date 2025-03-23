@@ -14,7 +14,7 @@ namespace HiveWear.Application.Clothing.Queries
 
         public async Task<IEnumerable<ClothingItem>> Handle(GetAllClothingItemsQuery request, CancellationToken cancellationToken)
         {
-            return await _clothingRepository.GetAllAsync().ConfigureAwait(false);
+            return await _clothingRepository.GetAllClothingItemsAsync().ConfigureAwait(false);
         }
     }
 }

@@ -1,40 +1,56 @@
-﻿using HiveWear.Domain.Enums;
-using HiveWear.Domain.Interfaces.Repositories;
+﻿using HiveWear.Domain.Interfaces.Repositories;
 using HiveWear.Domain.Models;
+using HiveWear.Infrastructure.Database;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 
 namespace HiveWear.Infrastructure.Repositories
 {
-    internal sealed class ClothingRepository : IClothingRepository
+    internal sealed class ClothingRepository(HiveWearDbContext dbContext) : IClothingRepository
     {
-        public Task<IEnumerable<ClothingItem>> GetAllAsync()
+        private readonly HiveWearDbContext _dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
+
+        public async Task<ClothingItem> AddClothingItemAsync(ClothingItem clothingItem)
         {
-            return Task.FromResult<IEnumerable<ClothingItem>>(new List<ClothingItem>
+            EntityEntry<ClothingItem> insertedItem = await _dbContext.ClothingItems.AddAsync(clothingItem).ConfigureAwait(false);
+
+            await _dbContext.SaveChangesAsync().ConfigureAwait(false);
+
+            return insertedItem.Entity;
+        }
+
+        public async Task<bool> DeleteClothingItemAsync(int id)
+        {
+            ClothingItem? clothingItem = await _dbContext.ClothingItems.FindAsync(id).ConfigureAwait(false);
+
+            if (clothingItem is null)
             {
-                new ClothingItem
-                {
-                    Id = 1,
-                    Name = "T-shirt",
-                    ImageUrl = "https://example.com/t-shirt.jpg",
-                    Description = "A simple t-shirt",
-                    Category = "Shirts",
-                    Color = "White",
-                    Size = "M",
-                    Brand = "HiveWear",
-                    Season = Season.Summer
-                },
-                new ClothingItem
-                {
-                    Id = 2,
-                    Name = "Sweater",
-                    ImageUrl = "https://example.com/sweater.jpg",
-                    Description = "A warm sweater",
-                    Category = "Sweaters",
-                    Color = "Blue",
-                    Size = "L",
-                    Brand = "HiveWear",
-                    Season = Season.Winter
-                }
-            });
+                return false;
+            }
+
+            _dbContext.ClothingItems.Remove(clothingItem);
+
+            await _dbContext.SaveChangesAsync().ConfigureAwait(false);
+
+            return true;
+        }
+
+        public async Task<IEnumerable<ClothingItem>> GetAllClothingItemsAsync()
+        {
+            return await dbContext.ClothingItems.ToListAsync();
+        }
+
+        public async Task<ClothingItem?> GetClothingItemByIdAsync(int id)
+        {
+            return await dbContext.ClothingItems.FindAsync(id);
+        }
+
+        public async Task<ClothingItem> UpdateClothingItemAsync(ClothingItem clothingItem)
+        {
+            _dbContext.ClothingItems.Update(clothingItem);
+            await _dbContext.SaveChangesAsync().ConfigureAwait(false);
+
+            return clothingItem;
         }
     }
 }
