@@ -1,3 +1,4 @@
+using HiveWear.Api.Middlewares;
 using HiveWear.Application.Extensions;
 using HiveWear.Infrastructure.Extensions;
 
@@ -9,6 +10,8 @@ builder.Services.AddApplication();
 builder.Services.AddInfrastructure();
 
 WebApplication app = builder.Build();
+
+app.UseMiddleware<ExceptionHandlingMiddleware>();
 
 app.UseHttpsRedirection();
 
