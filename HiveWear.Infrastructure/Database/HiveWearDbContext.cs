@@ -1,10 +1,11 @@
 ﻿using HiveWear.Domain.Models;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 
 namespace HiveWear.Infrastructure.Database
 {
-    public sealed class HiveWearDbContext(DbContextOptions<HiveWearDbContext> options) : DbContext(options)
+    public class HiveWearDbContext(DbContextOptions<HiveWearDbContext> options) : IdentityDbContext<User>(options)
     {
         public DbSet<ClothingItem> ClothingItems { get; set; }
 
@@ -12,7 +13,7 @@ namespace HiveWear.Infrastructure.Database
         {
             List<EntityEntry> entries = [.. ChangeTracker.Entries().Where(e => e.Entity is ClothingItem)];
 
-            foreach (var entry in entries)
+            foreach (EntityEntry entry in entries)
             {
                 if (entry.State == EntityState.Added)
                 {
@@ -25,9 +26,7 @@ namespace HiveWear.Infrastructure.Database
                 }
             }
 
-            // Call base SaveChangesAsync
             return await base.SaveChangesAsync(cancellationToken);
         }
-
     }
 }
