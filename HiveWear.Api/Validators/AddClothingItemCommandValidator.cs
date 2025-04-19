@@ -1,7 +1,7 @@
 ﻿using FluentValidation;
 using HiveWear.Application.Clothing.Commands;
 
-namespace HiveWear.Application.Validators
+namespace HiveWear.Api.Validators
 {
     public class AddClothingItemCommandValidator : AbstractValidator<AddClothingItemCommand>
     {

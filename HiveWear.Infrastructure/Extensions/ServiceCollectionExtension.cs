@@ -35,9 +35,9 @@ namespace HiveWear.Infrastructure.Extensions
 
             services.AddDbContext<HiveWearDbContext>(options => options.UseSqlite($"Data Source={databasePath}"));
 
-            services.AddIdentityCore<User>()
-                .AddEntityFrameworkStores<HiveWearDbContext>()
-                .AddTokenProvider<DataProtectorTokenProvider<User>>(TokenOptions.DefaultProvider);
+            services.AddIdentity<User, IdentityRole>()
+                    .AddEntityFrameworkStores<HiveWearDbContext>()
+                    .AddDefaultTokenProviders();
 
             return services;
         }

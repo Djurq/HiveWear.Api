@@ -1,13 +1,12 @@
 ﻿using HiveWear.Domain.Interfaces.Services;
 using HiveWear.Domain.Models;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.Extensions.Configuration;
 
 namespace HiveWear.Infrastructure.Services
 {
     internal sealed class AuthenticationService(
-        UserManager<User> userManager, 
-        SignInManager<User> signInManager, 
+        UserManager<User> userManager,
+        SignInManager<User> signInManager,
         IJwtTokenService jwtTokenService) : IAuthenticationService
     {
         private readonly UserManager<User> _userManager = userManager ?? throw new ArgumentNullException(nameof(userManager));
