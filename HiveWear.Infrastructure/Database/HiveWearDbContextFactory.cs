@@ -7,7 +7,7 @@ namespace HiveWear.Infrastructure.Database
     {
         public HiveWearDbContext CreateDbContext(string[] args)
         {
-            string databasePath = "C:\\Users\\DjurredeJong\\source\\repos\\Djurq\\HiveWear.Api\\HiveWear.Infrastructure\\app.db";
+            string databasePath = "C:\\Users\\Djurr\\source\\repos\\HiveWear.Api\\HiveWear.Infrastructure\\app.db";
 
             DbContextOptionsBuilder<HiveWearDbContext> optionsBuilder = new();
             optionsBuilder.UseSqlite($"Data Source={databasePath}");
