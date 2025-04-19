@@ -5,6 +5,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using JwtConstants = HiveWear.Domain.Constants.JwtConstants;
 
 namespace HiveWear.Infrastructure.Services
 {
@@ -33,21 +34,21 @@ namespace HiveWear.Infrastructure.Services
 
             Claim[] claims =
             [
-                new Claim(ClaimTypes.NameIdentifier, user.Id),
-                new Claim(ClaimTypes.Name, user.UserName),
-                new Claim(ClaimTypes.Email, user.Email)
+                new (ClaimTypes.NameIdentifier, user.Id),
+                new (ClaimTypes.Name, user.UserName),
+                new (ClaimTypes.Email, user.Email)
             ];
 
-            string secretKey = _configuration["Jwt:SecretKey"] ?? throw new ArgumentNullException("Secret key cannot be null or empty.", nameof(_configuration));
+            string secretKey = _configuration[JwtConstants.SecretKey] ?? throw new ArgumentNullException("Secret key cannot be null or empty.", nameof(_configuration));
 
-            SymmetricSecurityKey key = new (Encoding.UTF8.GetBytes(secretKey));
-            SigningCredentials creds = new (key, SecurityAlgorithms.HmacSha256);
+            SymmetricSecurityKey key = new(Encoding.UTF8.GetBytes(secretKey));
+            SigningCredentials creds = new(key, SecurityAlgorithms.HmacSha256);
 
-            JwtSecurityToken token = new (
-                _configuration["Jwt:Issuer"],
-                _configuration["Jwt:Audience"],
+            JwtSecurityToken token = new(
+                _configuration[JwtConstants.Issuer],
+                _configuration[JwtConstants.Audience],
                 claims,
-                expires: DateTime.Now.AddMinutes(30),
+                expires: DateTime.UtcNow.Add(JwtConstants.Expiration),
                 signingCredentials: creds);
 
             return new JwtSecurityTokenHandler().WriteToken(token);
