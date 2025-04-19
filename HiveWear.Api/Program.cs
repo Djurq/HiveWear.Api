@@ -1,34 +1,53 @@
 using HiveWear.Api.Middlewares;
 using HiveWear.Application.Extensions;
 using HiveWear.Infrastructure.Extensions;
+using Serilog;
 
-WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
-
-builder.Services.AddControllers();
-builder.Services.AddApplication();
-builder.Services.AddInfrastructure();
-
-builder.Services.AddCors(options =>
+try
 {
-    options.AddPolicy("AllowAllOrigins", builder =>
+    Log.Logger = new LoggerConfiguration()
+        .MinimumLevel.Information()
+        .WriteTo.File("Logs/log-.txt", rollingInterval: RollingInterval.Day)
+        .CreateLogger();
+
+    Log.Information("Starting up the app...");
+
+    WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
+
+    builder.Services.AddControllers();
+    builder.Services.AddApplication();
+    builder.Services.AddInfrastructure();
+
+    builder.Services.AddCors(options =>
     {
-        builder.AllowAnyOrigin() // Allow any origin
-               .AllowAnyHeader()
-               .AllowAnyMethod();
+        options.AddPolicy("AllowAllOrigins", builder =>
+        {
+            builder.AllowAnyOrigin() // Allow any origin
+                   .AllowAnyHeader()
+                   .AllowAnyMethod();
+        });
     });
-});
 
+    builder.Host.UseSerilog();
 
-WebApplication app = builder.Build();
+    WebApplication app = builder.Build();
 
-app.UseCors("AllowAllOrigins");
-app.UseMiddleware<ExceptionHandlingMiddleware>();
+    app.UseCors("AllowAllOrigins");
 
-app.UseHttpsRedirection();
+    app.UseMiddleware<RequestResponseLoggingMiddleware>();
+    app.UseMiddleware<ExceptionHandlingMiddleware>();
 
-app.UseAuthentication();
-app.UseAuthorization();
+    app.UseHttpsRedirection();
 
-app.MapControllers();
+    app.UseAuthentication();
+    app.UseAuthorization();
 
-app.Run();
+    app.MapControllers();
+
+    app.Run();
+}
+finally
+{
+    Log.CloseAndFlush();
+    Log.Information("Shutting down the app...");
+}
