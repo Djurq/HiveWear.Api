@@ -13,7 +13,7 @@ namespace HiveWear.Infrastructure.Services
                     File.Delete(filePath);
                     return Task.FromResult(true);
                 }
-                catch (Exception ex)
+                catch (Exception)
                 {
                     return Task.FromResult(false);
                 }
