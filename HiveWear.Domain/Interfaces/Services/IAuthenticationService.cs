@@ -4,7 +4,7 @@ namespace HiveWear.Domain.Interfaces.Services
 {
     public interface IAuthenticationService
     {
-        Task<bool> RegisterAsync(RegisterModel registerModel);
-        Task<bool> LoginAsync(LoginModel loginModel);
+        Task<string> RegisterAsync(RegisterModel registerModel);
+        Task<string> LoginAsync(LoginModel loginModel);
     }
 }

@@ -35,7 +35,7 @@ namespace HiveWear.Infrastructure.Services
             throw new UnauthorizedAccessException("Invalid login attempt.");
         }
 
-        public Task<bool> RegisterAsync(RegisterModel registerModel)
+        public Task<string> RegisterAsync(RegisterModel registerModel)
         {
             throw new NotImplementedException();
         }

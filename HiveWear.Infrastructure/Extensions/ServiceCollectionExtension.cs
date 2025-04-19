@@ -21,6 +21,7 @@ namespace HiveWear.Infrastructure.Extensions
         public static IServiceCollection AddInfrastructure(this IServiceCollection services)
         {
             services.AddTransient<IClothingRepository, ClothingRepository>();
+
             services.AddDatabase();
             services.AddServices();
             services.AddAuthentication();
@@ -30,7 +31,7 @@ namespace HiveWear.Infrastructure.Extensions
 
         private static IServiceCollection AddDatabase(this IServiceCollection services)
         {
-            string databasePath = "C:\\Users\\DjurredeJong\\source\\repos\\Djurq\\HiveWear.Api\\HiveWear.Infrastructure\\app.db";
+            string databasePath = "C:\\Users\\Djurr\\source\\repos\\HiveWear.Api\\HiveWear.Infrastructure\\app.db";
 
             services.AddDbContext<HiveWearDbContext>(options => options.UseSqlite($"Data Source={databasePath}"));
 
@@ -44,6 +45,9 @@ namespace HiveWear.Infrastructure.Extensions
         private static IServiceCollection AddServices(this IServiceCollection services)
         {
             services.AddTransient<IFileStorageService, FileStorageService>();
+            services.AddTransient<IAuthenticationService, AuthenticationService>();
+            services.AddTransient<IJwtTokenService, JwtTokenService>();
+
             return services;
         }
 
