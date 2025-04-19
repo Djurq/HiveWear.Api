@@ -1,4 +1,5 @@
 ﻿using HiveWear.Application.Authentication;
+using HiveWear.Application.Authentication.Commands;
 using HiveWear.Domain.Models;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;

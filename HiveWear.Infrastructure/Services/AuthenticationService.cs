@@ -34,9 +34,24 @@ namespace HiveWear.Infrastructure.Services
             throw new UnauthorizedAccessException("Invalid login attempt.");
         }
 
-        public Task<string> RegisterAsync(RegisterModel registerModel)
+        public async Task<string> RegisterAsync(RegisterModel registerModel)
         {
-            throw new NotImplementedException();
+            ArgumentNullException.ThrowIfNull(registerModel);
+
+            User user = new()
+            {
+                UserName = registerModel.UserName,
+                Email = registerModel.Email
+            };
+
+            IdentityResult result = await _userManager.CreateAsync(user, registerModel.Password).ConfigureAwait(false);
+
+            if (result.Succeeded)
+            {
+                return _jwtTokenService.GenerateToken(user);
+            }
+
+            throw new InvalidOperationException("User registration failed.");
         }
     }
 }

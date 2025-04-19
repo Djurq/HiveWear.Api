@@ -2,7 +2,7 @@
 using HiveWear.Domain.Models;
 using MediatR;
 
-namespace HiveWear.Application.Authentication
+namespace HiveWear.Application.Authentication.Commands
 {
     public record class LoginCommand(LoginModel? LoginModel) : IRequest<string>
     {
