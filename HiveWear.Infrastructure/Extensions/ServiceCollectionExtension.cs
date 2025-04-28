@@ -1,8 +1,10 @@
 ﻿using HiveWear.Domain.Constants;
+using HiveWear.Domain.Interfaces.Provider;
 using HiveWear.Domain.Interfaces.Repositories;
 using HiveWear.Domain.Interfaces.Services;
 using HiveWear.Domain.Models;
 using HiveWear.Infrastructure.Database;
+using HiveWear.Infrastructure.Provider;
 using HiveWear.Infrastructure.Repositories;
 using HiveWear.Infrastructure.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -22,6 +24,8 @@ namespace HiveWear.Infrastructure.Extensions
         {
             services.AddTransient<IClothingRepository, ClothingRepository>();
             services.AddTransient<IRefreshTokenRepository, RefreshTokenRepository>();
+            services.AddHttpContextAccessor();
+            services.AddScoped<IUserProvider, UserProvider>();
 
             services.AddDatabase();
             services.AddServices();

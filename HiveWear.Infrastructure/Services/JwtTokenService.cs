@@ -1,5 +1,7 @@
-﻿using HiveWear.Domain.Interfaces.Services;
+﻿using HiveWear.Domain.Interfaces.Provider;
+using HiveWear.Domain.Interfaces.Services;
 using HiveWear.Domain.Models;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
@@ -10,13 +12,25 @@ using JwtConstants = HiveWear.Domain.Constants.JwtConstants;
 
 namespace HiveWear.Infrastructure.Services
 {
-    internal sealed class JwtTokenService(IConfiguration configuration) : IJwtTokenService
+    internal sealed class JwtTokenService(
+        IConfiguration configuration, 
+        IUserProvider userProvider,
+        UserManager<User> userManager) : IJwtTokenService
     {
         private readonly IConfiguration _configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
+        private readonly IUserProvider _userProvider = userProvider ?? throw new ArgumentNullException(nameof(userProvider));
+        private readonly UserManager<User> _userManager = userManager ?? throw new ArgumentNullException(nameof(userManager));
 
-        public string GenerateToken(User user)
+        public string GenerateJwtToken()
         {
-            ArgumentNullException.ThrowIfNull(user);
+            string userId = _userProvider.GetUserId() ?? throw new UnauthorizedAccessException("User ID cannot be null or empty.");
+
+            User? user = _userManager.Users.FirstOrDefault(u => u.Id == userId);
+
+            if (user is null)
+            {
+                throw new ArgumentNullException("User cannot be null.", nameof(user));
+            }
 
             if (string.IsNullOrEmpty(user.Id))
             {
@@ -55,7 +69,23 @@ namespace HiveWear.Infrastructure.Services
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
 
-        public string GenerateRefreshToken()
+        public RefreshToken GenerateRefreshToken()
+        {
+            string token = GenerateRandomString();
+            string userId = _userProvider.GetUserId() ?? throw new ArgumentNullException("User ID cannot be null or empty.", nameof(_userProvider));
+
+            RefreshToken refreshToken = new()
+            {
+                UserId = userId,
+                Token = token,
+                CreatedAt = DateTime.UtcNow,
+                ExpiresAt = DateTime.UtcNow.Add(JwtConstants.Expiration),
+            };
+
+            return refreshToken;
+        }
+
+        private static string GenerateRandomString()
         {
             byte[] randomNumber = new byte[32];
 

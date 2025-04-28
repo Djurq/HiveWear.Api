@@ -7,57 +7,55 @@ using Microsoft.AspNetCore.Http;
 
 namespace HiveWear.Application.Authentication.Commands
 {
-    public record class RefreshTokenCommand : IRequest<RefreshTokenResult>
+    public record class RefreshTokenCommand(string refreshToken) : IRequest<RefreshTokenResult>
     {
     }
 
     public class RefreshTokenCommandHandler(
-        IAuthenticationService authenticationService,
-        IHttpContextAccessor httpContextAccessor,
-        IRefreshTokenRepository refreshTokenRepository) : IRequestHandler<RefreshTokenCommand, RefreshTokenResult>
+        IRefreshTokenRepository refreshTokenRepository,
+        IJwtTokenService jwtTokenService) : IRequestHandler<RefreshTokenCommand, RefreshTokenResult>
     {
-        private readonly IAuthenticationService _authenticationService = authenticationService ?? throw new ArgumentNullException(nameof(authenticationService));
-        private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor ?? throw new ArgumentNullException(nameof(httpContextAccessor));
         private readonly IRefreshTokenRepository _refreshTokenRepository = refreshTokenRepository ?? throw new ArgumentNullException(nameof(refreshTokenRepository));
+        private readonly IJwtTokenService jwtTokenService = jwtTokenService ?? throw new ArgumentNullException(nameof(jwtTokenService));
 
         public async Task<RefreshTokenResult> Handle(RefreshTokenCommand request, CancellationToken cancellationToken)
         {
-            string? refreshToken = _httpContextAccessor.HttpContext?.Request.Cookies["refreshToken"];
-
-            if (string.IsNullOrWhiteSpace(refreshToken))
+            if (string.IsNullOrWhiteSpace(request.refreshToken))
             {
-                throw new ArgumentNullException("Refresh token is null", nameof(refreshToken));
+                throw new ArgumentNullException("Refresh token is null", nameof(request.refreshToken));
             }
 
-            RefreshToken? storedToken = await _refreshTokenRepository.GetByTokenAsync(refreshToken);
+            RefreshToken? storedToken = await _refreshTokenRepository.GetByTokenAsync(request.refreshToken);
 
-            if (storedToken == null || storedToken.IsRevoked)
+            if (storedToken == null || storedToken.IsRevoked || storedToken.IsExpired)
             {
                 return new RefreshTokenResult { IsSuccess = false };
-            }
-
-            if (storedToken.IsExpired)
-            {
-                await _refreshTokenRepository.RevokeTokenAsync(storedToken.Token, storedToken.UserId);
-                return new RefreshTokenResult { IsSuccess = false };
-            }
-
-            if (storedToken.ReplacedByToken != null)
-            {
-                await _refreshTokenRepository.RevokeTokenAsync(storedToken.ReplacedByToken, storedToken.UserId);
             }
 
             await _refreshTokenRepository.RevokeTokenAsync(storedToken.Token, storedToken.UserId);
 
-            RefreshTokenResult result = new()
+            RefreshToken newRefreshToken = jwtTokenService.GenerateRefreshToken();
+
+            bool refreshTokenAdded = await _refreshTokenRepository.AddRefreshTokenAsync(newRefreshToken).ConfigureAwait(false);
+
+            if (!refreshTokenAdded)
+            {
+                return new RefreshTokenResult { IsSuccess = false };
+            }
+
+            storedToken.ReplacedByToken = newRefreshToken.Token;
+            bool replacedByUpdated = await _refreshTokenRepository.UpdateRefreshTokenAsync(storedToken).ConfigureAwait(false);
+
+            if (!replacedByUpdated)
+            {
+                return new RefreshTokenResult { IsSuccess = false };
+            }
+
+            return new RefreshTokenResult
             {
                 IsSuccess = true,
-                Token = storedToken.Token,
-                UserId = storedToken.UserId
+                RefreshToken = newRefreshToken,
             };
-
-
-            return await _authenticationService.GenerateRefreshTokenAsync(request.UserId).ConfigureAwait(false);
         }
     }
 }
