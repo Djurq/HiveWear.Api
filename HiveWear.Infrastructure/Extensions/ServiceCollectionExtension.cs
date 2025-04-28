@@ -21,6 +21,7 @@ namespace HiveWear.Infrastructure.Extensions
         public static IServiceCollection AddInfrastructure(this IServiceCollection services)
         {
             services.AddTransient<IClothingRepository, ClothingRepository>();
+            services.AddTransient<IRefreshTokenRepository, RefreshTokenRepository>();
 
             services.AddDatabase();
             services.AddServices();

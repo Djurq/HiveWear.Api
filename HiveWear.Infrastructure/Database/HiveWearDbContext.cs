@@ -8,6 +8,7 @@ namespace HiveWear.Infrastructure.Database
     public class HiveWearDbContext(DbContextOptions<HiveWearDbContext> options) : IdentityDbContext<User>(options)
     {
         public DbSet<ClothingItem> ClothingItems { get; set; }
+        public DbSet<RefreshToken> RefreshTokens { get; set; }
 
         public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
         {
