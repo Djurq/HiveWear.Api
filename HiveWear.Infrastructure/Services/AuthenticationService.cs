@@ -1,5 +1,9 @@
-﻿using HiveWear.Domain.Interfaces.Services;
+﻿using HiveWear.Domain.Dto;
+using HiveWear.Domain.Interfaces.Repositories;
+using HiveWear.Domain.Interfaces.Services;
 using HiveWear.Domain.Models;
+using HiveWear.Domain.Models.Authentication;
+using HiveWear.Domain.Result;
 using Microsoft.AspNetCore.Identity;
 
 namespace HiveWear.Infrastructure.Services
@@ -7,13 +11,15 @@ namespace HiveWear.Infrastructure.Services
     internal sealed class AuthenticationService(
         UserManager<User> userManager,
         SignInManager<User> signInManager,
-        IJwtTokenService jwtTokenService) : IAuthenticationService
+        IJwtTokenService jwtTokenService,
+        IRefreshTokenRepository refreshTokenRepository) : IAuthenticationService
     {
         private readonly UserManager<User> _userManager = userManager ?? throw new ArgumentNullException(nameof(userManager));
         private readonly SignInManager<User> _signInManager = signInManager ?? throw new ArgumentNullException(nameof(signInManager));
         private readonly IJwtTokenService _jwtTokenService = jwtTokenService ?? throw new ArgumentNullException(nameof(jwtTokenService));
+        private readonly IRefreshTokenRepository _refreshTokenRepository = refreshTokenRepository ?? throw new ArgumentNullException(nameof(refreshTokenRepository));
 
-        public async Task<string> LoginAsync(LoginModel loginModel)
+        public async Task<LoginResult> LoginAsync(LoginModel loginModel)
         {
             ArgumentNullException.ThrowIfNull(loginModel);
 
@@ -28,13 +34,22 @@ namespace HiveWear.Infrastructure.Services
 
             if (result.Succeeded)
             {
-                return _jwtTokenService.GenerateJwtToken(user);
+                RefreshToken refreshToken = _jwtTokenService.GenerateRefreshToken();
+                string? jwtToken = _jwtTokenService.GenerateJwtToken();
+                bool refreshResult = await _refreshTokenRepository.AddRefreshTokenAsync(refreshToken).ConfigureAwait(false);
+
+                if (!refreshResult || string.IsNullOrEmpty(jwtToken))
+                {
+                    throw new InvalidOperationException("Failed to add refresh token.");
+                }
+
+                return new LoginResult(refreshToken.Token, jwtToken, loginModel.Email);
             }
 
             throw new UnauthorizedAccessException("Invalid login attempt.");
         }
 
-        public async Task<string> RegisterAsync(RegisterModel registerModel)
+        public async Task<RegisterResult> RegisterAsync(RegisterModel registerModel)
         {
             ArgumentNullException.ThrowIfNull(registerModel);
 
@@ -48,7 +63,16 @@ namespace HiveWear.Infrastructure.Services
 
             if (result.Succeeded)
             {
-                return _jwtTokenService.GenerateRefreshToken();
+                RefreshToken refreshToken = _jwtTokenService.GenerateRefreshToken();
+                string? jwtToken = _jwtTokenService.GenerateJwtToken();
+                bool refreshResult = await _refreshTokenRepository.AddRefreshTokenAsync(refreshToken).ConfigureAwait(false);
+
+                if (!refreshResult || string.IsNullOrEmpty(jwtToken))
+                {
+                    throw new InvalidOperationException("Failed to add refresh token.");
+                }
+
+                return new RegisterResult(refreshToken.Token, jwtToken, registerModel.Email);
             }
 
             throw new InvalidOperationException("User registration failed.");

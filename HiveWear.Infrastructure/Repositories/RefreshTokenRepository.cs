@@ -1,5 +1,5 @@
 ﻿using HiveWear.Domain.Interfaces.Repositories;
-using HiveWear.Domain.Models;
+using HiveWear.Domain.Models.Authentication;
 using HiveWear.Infrastructure.Database;
 using Microsoft.EntityFrameworkCore;
 

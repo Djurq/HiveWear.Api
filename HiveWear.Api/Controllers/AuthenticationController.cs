@@ -1,7 +1,7 @@
 ﻿using HiveWear.Application.Authentication;
 using HiveWear.Application.Authentication.Commands;
-using HiveWear.Domain.Dto;
-using HiveWear.Domain.Models;
+using HiveWear.Domain.Models.Authentication;
+using HiveWear.Domain.Result;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -26,12 +26,12 @@ namespace HiveWear.Api.Controllers
 
             LoginResult loginResult = await _mediator.Send(new LoginCommand(loginModel)).ConfigureAwait(false);
 
-            if (string.IsNullOrEmpty(loginResult.Token))
+            if (string.IsNullOrEmpty(loginResult.JwtToken))
             {
                 return Unauthorized("Invalid username or password.");
             }
 
-            SetRefreshTokenCookie(loginResult.Token);
+            SetRefreshTokenCookie(loginResult.RefreshToken);
 
             return Ok(loginResult);
         }
@@ -45,15 +45,15 @@ namespace HiveWear.Api.Controllers
                 return BadRequest("Register model cannot be null.");
             }
 
-            string token = await _mediator.Send(new RegisterCommand(registerModel)).ConfigureAwait(false);
+            RegisterResult registerResult = await _mediator.Send(new RegisterCommand(registerModel)).ConfigureAwait(false);
 
-            if (!string.IsNullOrEmpty(token))
+            if (string.IsNullOrEmpty(registerResult.JwtToken))
             {
-                SetRefreshTokenCookie(token);
-                return Ok(new {Token = token});
+                return BadRequest("User registration failed.");
             }
 
-            return BadRequest("User registration failed.");
+            SetRefreshTokenCookie(registerResult.RefreshToken);
+            return Ok(registerResult);
         }
 
         [AllowAnonymous]

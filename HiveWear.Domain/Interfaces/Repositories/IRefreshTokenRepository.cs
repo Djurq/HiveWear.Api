@@ -1,4 +1,4 @@
-﻿using HiveWear.Domain.Models;
+﻿using HiveWear.Domain.Models.Authentication;
 
 namespace HiveWear.Domain.Interfaces.Repositories
 {

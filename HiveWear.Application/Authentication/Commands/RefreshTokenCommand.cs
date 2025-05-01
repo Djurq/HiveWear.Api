@@ -1,7 +1,7 @@
-﻿using HiveWear.Domain.Dto;
-using HiveWear.Domain.Interfaces.Repositories;
+﻿using HiveWear.Domain.Interfaces.Repositories;
 using HiveWear.Domain.Interfaces.Services;
-using HiveWear.Domain.Models;
+using HiveWear.Domain.Models.Authentication;
+using HiveWear.Domain.Result;
 using MediatR;
 using Microsoft.AspNetCore.Http;
 

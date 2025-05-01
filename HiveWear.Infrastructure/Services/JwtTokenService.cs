@@ -1,6 +1,7 @@
 ﻿using HiveWear.Domain.Interfaces.Provider;
 using HiveWear.Domain.Interfaces.Services;
 using HiveWear.Domain.Models;
+using HiveWear.Domain.Models.Authentication;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;

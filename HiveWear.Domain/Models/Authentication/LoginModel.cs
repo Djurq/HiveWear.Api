@@ -1,4 +1,4 @@
-﻿namespace HiveWear.Domain.Models
+﻿namespace HiveWear.Domain.Models.Authentication
 {
     public sealed class LoginModel
     {

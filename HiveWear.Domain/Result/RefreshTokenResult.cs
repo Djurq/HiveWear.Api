@@ -1,6 +1,6 @@
-﻿using HiveWear.Domain.Models;
+﻿using HiveWear.Domain.Models.Authentication;
 
-namespace HiveWear.Domain.Dto
+namespace HiveWear.Domain.Result
 {
     public sealed class RefreshTokenResult
     {

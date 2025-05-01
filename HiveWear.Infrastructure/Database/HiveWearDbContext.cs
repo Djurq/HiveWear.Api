@@ -1,4 +1,5 @@
 ﻿using HiveWear.Domain.Models;
+using HiveWear.Domain.Models.Authentication;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
