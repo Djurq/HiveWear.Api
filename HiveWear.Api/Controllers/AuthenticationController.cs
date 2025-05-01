@@ -24,15 +24,16 @@ namespace HiveWear.Api.Controllers
                 return BadRequest("Login model cannot be null.");
             }
 
-            string token = await _mediator.Send(new LoginCommand(loginModel)).ConfigureAwait(false);
+            LoginResult loginResult = await _mediator.Send(new LoginCommand(loginModel)).ConfigureAwait(false);
 
-            if (string.IsNullOrEmpty(token))
+            if (string.IsNullOrEmpty(loginResult.Token))
             {
                 return Unauthorized("Invalid username or password.");
             }
 
-            SetRefreshTokenCookie(token);
-            return Ok(new { Token = token });
+            SetRefreshTokenCookie(loginResult.Token);
+
+            return Ok(loginResult);
         }
 
         [AllowAnonymous]

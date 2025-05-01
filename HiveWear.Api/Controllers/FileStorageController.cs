@@ -1,5 +1,6 @@
 ﻿using HiveWear.Application.Images.Commands;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace HiveWear.Api.Controllers

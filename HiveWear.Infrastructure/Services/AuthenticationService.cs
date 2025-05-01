@@ -28,7 +28,7 @@ namespace HiveWear.Infrastructure.Services
 
             if (result.Succeeded)
             {
-                return _jwtTokenService.GenerateToken(user);
+                return _jwtTokenService.GenerateJwtToken(user);
             }
 
             throw new UnauthorizedAccessException("Invalid login attempt.");
@@ -48,7 +48,7 @@ namespace HiveWear.Infrastructure.Services
 
             if (result.Succeeded)
             {
-                return _jwtTokenService.GenerateToken(user);
+                return _jwtTokenService.GenerateRefreshToken();
             }
 
             throw new InvalidOperationException("User registration failed.");
