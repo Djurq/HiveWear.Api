@@ -1,5 +1,4 @@
-﻿using HiveWear.Domain.Dto;
-using HiveWear.Domain.Interfaces.Repositories;
+﻿using HiveWear.Domain.Interfaces.Repositories;
 using HiveWear.Domain.Interfaces.Services;
 using HiveWear.Domain.Models;
 using HiveWear.Domain.Models.Authentication;
@@ -34,8 +33,8 @@ namespace HiveWear.Infrastructure.Services
 
             if (result.Succeeded)
             {
-                RefreshToken refreshToken = _jwtTokenService.GenerateRefreshToken();
-                string? jwtToken = _jwtTokenService.GenerateJwtToken();
+                RefreshToken refreshToken = _jwtTokenService.GenerateRefreshToken(user.Id);
+                string? jwtToken = _jwtTokenService.GenerateJwtToken(user.Id);
                 bool refreshResult = await _refreshTokenRepository.AddRefreshTokenAsync(refreshToken).ConfigureAwait(false);
 
                 if (!refreshResult || string.IsNullOrEmpty(jwtToken))
@@ -55,16 +54,17 @@ namespace HiveWear.Infrastructure.Services
 
             User user = new()
             {
-                UserName = registerModel.UserName,
+                UserName = registerModel.Email,
                 Email = registerModel.Email
             };
 
             IdentityResult result = await _userManager.CreateAsync(user, registerModel.Password).ConfigureAwait(false);
+            User? generatedUser = await _userManager.FindByEmailAsync(user.Email).ConfigureAwait(false);
 
-            if (result.Succeeded)
+            if (result.Succeeded && generatedUser is not null)
             {
-                RefreshToken refreshToken = _jwtTokenService.GenerateRefreshToken();
-                string? jwtToken = _jwtTokenService.GenerateJwtToken();
+                RefreshToken refreshToken = _jwtTokenService.GenerateRefreshToken(generatedUser.Id);
+                string? jwtToken = _jwtTokenService.GenerateJwtToken(generatedUser.Id);
                 bool refreshResult = await _refreshTokenRepository.AddRefreshTokenAsync(refreshToken).ConfigureAwait(false);
 
                 if (!refreshResult || string.IsNullOrEmpty(jwtToken))

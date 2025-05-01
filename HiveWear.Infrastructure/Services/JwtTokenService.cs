@@ -15,17 +15,13 @@ namespace HiveWear.Infrastructure.Services
 {
     internal sealed class JwtTokenService(
         IConfiguration configuration, 
-        IUserProvider userProvider,
         UserManager<User> userManager) : IJwtTokenService
     {
         private readonly IConfiguration _configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
-        private readonly IUserProvider _userProvider = userProvider ?? throw new ArgumentNullException(nameof(userProvider));
         private readonly UserManager<User> _userManager = userManager ?? throw new ArgumentNullException(nameof(userManager));
 
-        public string GenerateJwtToken()
+        public string GenerateJwtToken(string userId)
         {
-            string userId = _userProvider.GetUserId() ?? throw new UnauthorizedAccessException("User ID cannot be null or empty.");
-
             User? user = _userManager.Users.FirstOrDefault(u => u.Id == userId);
 
             if (user is null)
@@ -70,10 +66,9 @@ namespace HiveWear.Infrastructure.Services
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
 
-        public RefreshToken GenerateRefreshToken()
+        public RefreshToken GenerateRefreshToken(string userId)
         {
             string token = GenerateRandomString();
-            string userId = _userProvider.GetUserId() ?? throw new ArgumentNullException("User ID cannot be null or empty.", nameof(_userProvider));
 
             RefreshToken refreshToken = new()
             {

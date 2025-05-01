@@ -34,7 +34,7 @@ namespace HiveWear.Application.Authentication.Commands
 
             await _refreshTokenRepository.RevokeTokenAsync(storedToken.Token, storedToken.UserId);
 
-            RefreshToken newRefreshToken = jwtTokenService.GenerateRefreshToken();
+            RefreshToken newRefreshToken = jwtTokenService.GenerateRefreshToken(storedToken.UserId);
 
             bool refreshTokenAdded = await _refreshTokenRepository.AddRefreshTokenAsync(newRefreshToken).ConfigureAwait(false);
 

@@ -4,8 +4,8 @@ namespace HiveWear.Domain.Interfaces.Services
 {
     public interface IJwtTokenService
     {
-        string? GenerateJwtToken();
+        string? GenerateJwtToken(string userId);
 
-        RefreshToken GenerateRefreshToken();
+        RefreshToken GenerateRefreshToken(string userId);
     }
 }
