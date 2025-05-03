@@ -36,7 +36,7 @@ namespace HiveWear.Infrastructure.Extensions
 
         private static IServiceCollection AddDatabase(this IServiceCollection services)
         {
-            string databasePath = "C:\\Users\\Djurr\\source\\repos\\HiveWear.Api\\HiveWear.Infrastructure\\app.db";
+            string databasePath = "C:\\Users\\DjurredeJong\\source\\repos\\Djurq\\HiveWear.Api\\HiveWear.Infrastructure\\app.db";
 
             services.AddDbContext<HiveWearDbContext>(options => options.UseSqlite($"Data Source={databasePath}"));
 
