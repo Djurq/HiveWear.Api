@@ -1,18 +1,18 @@
-﻿using HiveWear.Domain.Interfaces.Services;
-using HiveWear.Domain.Models.Authentication;
-using HiveWear.Domain.Result;
+﻿using HiveWear.Application.Authentication.Requests;
+using HiveWear.Application.Authentication.Responses;
+using HiveWear.Application.Interfaces.Services;
 using MediatR;
 
 namespace HiveWear.Application.Authentication.Commands
 {
-    public record class RegisterCommand(RegisterModel? RegisterModel) : IRequest<RegisterResult>
+    public record class RegisterCommand(RegisterRequest? RegisterModel) : IRequest<RegisterResponse>
     {
     }
 
-    public class RegisterCommandHandler(IAuthenticationService authenticationService) : IRequestHandler<RegisterCommand, RegisterResult>
+    public class RegisterCommandHandler(IAuthenticationService authenticationService) : IRequestHandler<RegisterCommand, RegisterResponse>
     {
         private readonly IAuthenticationService _authenticationService = authenticationService ?? throw new ArgumentNullException(nameof(authenticationService));
-        public Task<RegisterResult> Handle(RegisterCommand request, CancellationToken cancellationToken)
+        public Task<RegisterResponse> Handle(RegisterCommand request, CancellationToken cancellationToken)
         {
             if (request.RegisterModel is null)
             {

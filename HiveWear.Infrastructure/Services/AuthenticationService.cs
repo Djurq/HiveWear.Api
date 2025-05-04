@@ -1,8 +1,8 @@
-﻿using HiveWear.Domain.Interfaces.Repositories;
-using HiveWear.Domain.Interfaces.Services;
-using HiveWear.Domain.Models;
-using HiveWear.Domain.Models.Authentication;
-using HiveWear.Domain.Result;
+﻿using HiveWear.Application.Authentication.Requests;
+using HiveWear.Application.Authentication.Responses;
+using HiveWear.Application.Interfaces.Repositories;
+using HiveWear.Application.Interfaces.Services;
+using HiveWear.Domain.Entities;
 using Microsoft.AspNetCore.Identity;
 
 namespace HiveWear.Infrastructure.Services
@@ -18,18 +18,18 @@ namespace HiveWear.Infrastructure.Services
         private readonly IJwtTokenService _jwtTokenService = jwtTokenService ?? throw new ArgumentNullException(nameof(jwtTokenService));
         private readonly IRefreshTokenRepository _refreshTokenRepository = refreshTokenRepository ?? throw new ArgumentNullException(nameof(refreshTokenRepository));
 
-        public async Task<LoginResult> LoginAsync(LoginModel loginModel)
+        public async Task<LoginResponse> LoginAsync(LoginRequest loginRequest)
         {
-            ArgumentNullException.ThrowIfNull(loginModel);
+            ArgumentNullException.ThrowIfNull(loginRequest);
 
-            User? user = await _userManager.FindByEmailAsync(loginModel.Email).ConfigureAwait(false);
+            User? user = await _userManager.FindByEmailAsync(loginRequest.Email).ConfigureAwait(false);
 
             if (user is not { })
             {
                 throw new UnauthorizedAccessException("Invalid login attempt.");
             }
 
-            SignInResult result = await _signInManager.CheckPasswordSignInAsync(user, loginModel.Password, lockoutOnFailure: false);
+            SignInResult result = await _signInManager.CheckPasswordSignInAsync(user, loginRequest.Password, lockoutOnFailure: false);
 
             if (result.Succeeded)
             {
@@ -42,23 +42,23 @@ namespace HiveWear.Infrastructure.Services
                     throw new InvalidOperationException("Failed to add refresh token.");
                 }
 
-                return new LoginResult(refreshToken.Token, jwtToken, loginModel.Email);
+                return new LoginResponse(refreshToken.Token, jwtToken, loginRequest.Email);
             }
 
             throw new UnauthorizedAccessException("Invalid login attempt.");
         }
 
-        public async Task<RegisterResult> RegisterAsync(RegisterModel registerModel)
+        public async Task<RegisterResponse> RegisterAsync(RegisterRequest registerRequest)
         {
-            ArgumentNullException.ThrowIfNull(registerModel);
+            ArgumentNullException.ThrowIfNull(registerRequest);
 
             User user = new()
             {
-                UserName = registerModel.Email,
-                Email = registerModel.Email
+                UserName = registerRequest.Email,
+                Email = registerRequest.Email
             };
 
-            IdentityResult result = await _userManager.CreateAsync(user, registerModel.Password).ConfigureAwait(false);
+            IdentityResult result = await _userManager.CreateAsync(user, registerRequest.Password).ConfigureAwait(false);
             User? generatedUser = await _userManager.FindByEmailAsync(user.Email).ConfigureAwait(false);
 
             if (result.Succeeded && generatedUser is not null)
@@ -72,7 +72,7 @@ namespace HiveWear.Infrastructure.Services
                     throw new InvalidOperationException("Failed to add refresh token.");
                 }
 
-                return new RegisterResult(refreshToken.Token, jwtToken, registerModel.Email);
+                return new RegisterResponse(refreshToken.Token, jwtToken, registerRequest.Email);
             }
 
             throw new InvalidOperationException("User registration failed.");

@@ -1,8 +1,9 @@
-﻿using HiveWear.Domain.Constants;
-using HiveWear.Domain.Interfaces.Provider;
-using HiveWear.Domain.Interfaces.Repositories;
+﻿using HiveWear.Application.Interfaces.Providers;
+using HiveWear.Application.Interfaces.Repositories;
+using HiveWear.Application.Interfaces.Services;
+using HiveWear.Domain.Constants;
+using HiveWear.Domain.Entities;
 using HiveWear.Domain.Interfaces.Services;
-using HiveWear.Domain.Models;
 using HiveWear.Infrastructure.Database;
 using HiveWear.Infrastructure.Provider;
 using HiveWear.Infrastructure.Repositories;
@@ -12,7 +13,6 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 

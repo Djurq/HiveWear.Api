@@ -1,4 +1,4 @@
-﻿namespace HiveWear.Domain.Interfaces.Provider
+﻿namespace HiveWear.Application.Interfaces.Providers
 {
     public interface IUserProvider
     {

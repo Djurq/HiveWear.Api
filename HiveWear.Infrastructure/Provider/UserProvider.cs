@@ -1,4 +1,4 @@
-﻿using HiveWear.Domain.Interfaces.Provider;
+﻿using HiveWear.Application.Interfaces.Providers;
 using Microsoft.AspNetCore.Http;
 using System;
 using System.Security.Claims;

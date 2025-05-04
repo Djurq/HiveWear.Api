@@ -1,5 +1,5 @@
-﻿using HiveWear.Domain.Interfaces.Provider;
-using HiveWear.Domain.Interfaces.Services;
+﻿using HiveWear.Application.Interfaces.Providers;
+using HiveWear.Application.Interfaces.Services;
 using MediatR;
 
 namespace HiveWear.Application.Authentication.Commands

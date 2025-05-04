@@ -1,24 +1,23 @@
-﻿using HiveWear.Domain.Interfaces.Repositories;
-using HiveWear.Domain.Interfaces.Services;
-using HiveWear.Domain.Models.Authentication;
-using HiveWear.Domain.Result;
+﻿using HiveWear.Application.Authentication.Responses;
+using HiveWear.Application.Interfaces.Repositories;
+using HiveWear.Application.Interfaces.Services;
+using HiveWear.Domain.Entities;
 using MediatR;
-using Microsoft.AspNetCore.Http;
 
 namespace HiveWear.Application.Authentication.Commands
 {
-    public record class RefreshTokenCommand(string refreshToken) : IRequest<RefreshTokenResult>
+    public record class RefreshTokenCommand(string refreshToken) : IRequest<RefreshTokenResponse>
     {
     }
 
     public class RefreshTokenCommandHandler(
         IRefreshTokenRepository refreshTokenRepository,
-        IJwtTokenService jwtTokenService) : IRequestHandler<RefreshTokenCommand, RefreshTokenResult>
+        IJwtTokenService jwtTokenService) : IRequestHandler<RefreshTokenCommand, RefreshTokenResponse>
     {
         private readonly IRefreshTokenRepository _refreshTokenRepository = refreshTokenRepository ?? throw new ArgumentNullException(nameof(refreshTokenRepository));
         private readonly IJwtTokenService jwtTokenService = jwtTokenService ?? throw new ArgumentNullException(nameof(jwtTokenService));
 
-        public async Task<RefreshTokenResult> Handle(RefreshTokenCommand request, CancellationToken cancellationToken)
+        public async Task<RefreshTokenResponse> Handle(RefreshTokenCommand request, CancellationToken cancellationToken)
         {
             if (string.IsNullOrWhiteSpace(request.refreshToken))
             {
@@ -29,7 +28,7 @@ namespace HiveWear.Application.Authentication.Commands
 
             if (storedToken == null || storedToken.IsRevoked || storedToken.IsExpired)
             {
-                return new RefreshTokenResult { IsSuccess = false };
+                return new RefreshTokenResponse { IsSuccess = false };
             }
 
             await _refreshTokenRepository.RevokeTokenAsync(storedToken.Token, storedToken.UserId);
@@ -40,7 +39,7 @@ namespace HiveWear.Application.Authentication.Commands
 
             if (!refreshTokenAdded)
             {
-                return new RefreshTokenResult { IsSuccess = false };
+                return new RefreshTokenResponse { IsSuccess = false };
             }
 
             storedToken.ReplacedByToken = newRefreshToken.Token;
@@ -48,10 +47,10 @@ namespace HiveWear.Application.Authentication.Commands
 
             if (!replacedByUpdated)
             {
-                return new RefreshTokenResult { IsSuccess = false };
+                return new RefreshTokenResponse { IsSuccess = false };
             }
 
-            return new RefreshTokenResult
+            return new RefreshTokenResponse
             {
                 IsSuccess = true,
                 RefreshToken = newRefreshToken,

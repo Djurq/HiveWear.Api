@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
 
-namespace HiveWear.Domain.Models.Authentication
+namespace HiveWear.Domain.Entities
 {
     public class RefreshToken
     {

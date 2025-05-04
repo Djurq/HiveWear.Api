@@ -1,4 +1,4 @@
-﻿using HiveWear.Domain.Interfaces.Repositories;
+﻿using HiveWear.Application.Interfaces.Repositories;
 using MediatR;
 
 namespace HiveWear.Application.Clothing.Commands

@@ -1,7 +1,7 @@
-﻿using HiveWear.Application.Authentication;
-using HiveWear.Application.Authentication.Commands;
-using HiveWear.Domain.Models.Authentication;
-using HiveWear.Domain.Result;
+﻿using HiveWear.Application.Authentication.Commands;
+using HiveWear.Application.Authentication.Queries;
+using HiveWear.Application.Authentication.Requests;
+using HiveWear.Application.Authentication.Responses;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -17,43 +17,43 @@ namespace HiveWear.Api.Controllers
 
         [AllowAnonymous]
         [HttpPost("login")]
-        public async Task<IActionResult> Login([FromBody] LoginModel loginModel)
+        public async Task<IActionResult> Login([FromBody] LoginRequest loginModel)
         {
             if (loginModel is null)
             {
                 return BadRequest("Login model cannot be null.");
             }
 
-            LoginResult loginResult = await _mediator.Send(new LoginCommand(loginModel)).ConfigureAwait(false);
+            LoginResponse loginResponse = await _mediator.Send(new LoginCommand(loginModel)).ConfigureAwait(false);
 
-            if (string.IsNullOrEmpty(loginResult.JwtToken))
+            if (string.IsNullOrEmpty(loginResponse.JwtToken))
             {
                 return Unauthorized("Invalid username or password.");
             }
 
-            SetRefreshTokenCookie(loginResult.RefreshToken);
+            SetRefreshTokenCookie(loginResponse.RefreshToken);
 
-            return Ok(loginResult);
+            return Ok(loginResponse);
         }
 
         [AllowAnonymous]
         [HttpPost("register")]
-        public async Task<IActionResult> Register([FromBody] RegisterModel registerModel)
+        public async Task<IActionResult> Register([FromBody] RegisterRequest registerRequest)
         {
-            if (registerModel is null)
+            if (registerRequest is null)
             {
                 return BadRequest("Register model cannot be null.");
             }
 
-            RegisterResult registerResult = await _mediator.Send(new RegisterCommand(registerModel)).ConfigureAwait(false);
+            RegisterResponse registerResponse = await _mediator.Send(new RegisterCommand(registerRequest)).ConfigureAwait(false);
 
-            if (string.IsNullOrEmpty(registerResult.JwtToken))
+            if (string.IsNullOrEmpty(registerResponse.JwtToken))
             {
                 return BadRequest("User registration failed.");
             }
 
-            SetRefreshTokenCookie(registerResult.RefreshToken);
-            return Ok(registerResult);
+            SetRefreshTokenCookie(registerResponse.RefreshToken);
+            return Ok(registerResponse);
         }
 
         [AllowAnonymous]
@@ -67,24 +67,44 @@ namespace HiveWear.Api.Controllers
                 return Unauthorized("Refresh token is null.");
             }
 
-            RefreshTokenResult refreshTokenResult = await _mediator.Send(new RefreshTokenCommand(refreshToken)).ConfigureAwait(false);
+            RefreshTokenResponse refreshTokenResponse = await _mediator.Send(new RefreshTokenCommand(refreshToken)).ConfigureAwait(false);
             string? jwtToken = await _mediator.Send(new JwtTokenCommand()).ConfigureAwait(false);
 
-            if (refreshTokenResult.IsSuccess && !string.IsNullOrEmpty(jwtToken))
+            if (refreshTokenResponse.IsSuccess && !string.IsNullOrEmpty(jwtToken))
             {
-                SetRefreshTokenCookie(refreshTokenResult.RefreshToken.Token);
+                SetRefreshTokenCookie(refreshTokenResponse.RefreshToken.Token);
                 return Ok(new { Token = jwtToken });
             }
 
             return Unauthorized("Refresh token is invalid or expired.");
         }
 
+        [HttpGet("me")]
+        public async Task<IActionResult> GetUserInfo()
+        {
+            string? refreshToken = Request.Cookies["refreshToken"];
+            if (string.IsNullOrWhiteSpace(refreshToken))
+            {
+                return Unauthorized("Refresh token is null.");
+            }
+
+            UserInfoResponse userInfoResponse = await _mediator.Send(new UserInfoQuery(refreshToken)).ConfigureAwait(false);
+
+            if (!string.IsNullOrEmpty(userInfoResponse.RefreshToken) && !string.IsNullOrEmpty(userInfoResponse.JwtToken))
+            {
+                return Ok(userInfoResponse);
+            }
+
+            return Unauthorized("User info retrieval failed.");
+        }
+
+
         private void SetRefreshTokenCookie(string refreshToken)
         {
             CookieOptions cookieOptions = new()
             {
-                HttpOnly = true,
-                Secure = true, // Alleen via HTTPS
+                HttpOnly = false,
+                Secure = false,
                 SameSite = SameSiteMode.Strict,
                 Expires = DateTime.UtcNow.AddDays(7)
             };

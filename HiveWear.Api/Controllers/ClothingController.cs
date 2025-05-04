@@ -1,7 +1,7 @@
 ﻿using HiveWear.Application.Clothing.Commands;
 using HiveWear.Application.Clothing.Queries;
 using HiveWear.Application.Images.Commands;
-using HiveWear.Domain.Models;
+using HiveWear.Domain.Entities;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;

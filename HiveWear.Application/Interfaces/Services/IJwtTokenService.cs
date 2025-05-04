@@ -1,6 +1,6 @@
-﻿using HiveWear.Domain.Models.Authentication;
+﻿using HiveWear.Domain.Entities;
 
-namespace HiveWear.Domain.Interfaces.Services
+namespace HiveWear.Application.Interfaces.Services
 {
     public interface IJwtTokenService
     {

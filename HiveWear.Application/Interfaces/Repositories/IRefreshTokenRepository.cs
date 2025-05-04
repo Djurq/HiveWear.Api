@@ -1,6 +1,7 @@
-﻿using HiveWear.Domain.Models.Authentication;
+﻿
+using HiveWear.Domain.Entities;
 
-namespace HiveWear.Domain.Interfaces.Repositories
+namespace HiveWear.Application.Interfaces.Repositories
 {
     public interface IRefreshTokenRepository
     {
