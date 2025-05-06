@@ -1,7 +1,6 @@
 ﻿using HiveWear.Application.Authentication.Requests;
 using HiveWear.Application.Authentication.Responses;
 using HiveWear.Application.Interfaces.Services;
-using HiveWear.Domain.Models;
 using MediatR;
 
 namespace HiveWear.Application.Authentication.Commands

@@ -1,6 +1,5 @@
 ﻿using HiveWear.Application.Interfaces.Providers;
 using Microsoft.AspNetCore.Http;
-using System;
 using System.Security.Claims;
 
 namespace HiveWear.Infrastructure.Provider

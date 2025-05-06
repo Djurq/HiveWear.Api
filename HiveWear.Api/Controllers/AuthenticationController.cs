@@ -79,6 +79,7 @@ namespace HiveWear.Api.Controllers
             return Unauthorized("Refresh token is invalid or expired.");
         }
 
+        [AllowAnonymous]
         [HttpGet("me")]
         public async Task<IActionResult> GetUserInfo()
         {
@@ -103,7 +104,7 @@ namespace HiveWear.Api.Controllers
         {
             CookieOptions cookieOptions = new()
             {
-                HttpOnly = false,
+                HttpOnly = true,
                 Secure = false,
                 SameSite = SameSiteMode.Strict,
                 Expires = DateTime.UtcNow.AddDays(7)
