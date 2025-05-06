@@ -1,11 +1,11 @@
 ﻿using HiveWear.Application.Images.Commands;
-using HiveWear.Domain.Interfaces.Services;
 using MediatR;
-using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace HiveWear.Api.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class FileStorageController(IMediator mediator) : ControllerBase

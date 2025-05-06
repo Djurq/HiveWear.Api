@@ -1,6 +1,6 @@
-﻿namespace HiveWear.Domain.Models
+﻿namespace HiveWear.Application.Authentication.Requests
 {
-    public sealed class LoginModel
+    public sealed class LoginRequest
     {
         public string Email { get; set; } = string.Empty;
         public string Password { get; set; } = string.Empty;

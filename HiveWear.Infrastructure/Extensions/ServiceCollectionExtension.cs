@@ -1,8 +1,11 @@
-﻿using HiveWear.Domain.Constants;
-using HiveWear.Domain.Interfaces.Repositories;
+﻿using HiveWear.Application.Interfaces.Providers;
+using HiveWear.Application.Interfaces.Repositories;
+using HiveWear.Application.Interfaces.Services;
+using HiveWear.Domain.Constants;
+using HiveWear.Domain.Entities;
 using HiveWear.Domain.Interfaces.Services;
-using HiveWear.Domain.Models;
 using HiveWear.Infrastructure.Database;
+using HiveWear.Infrastructure.Provider;
 using HiveWear.Infrastructure.Repositories;
 using HiveWear.Infrastructure.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -10,7 +13,6 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 
@@ -21,6 +23,9 @@ namespace HiveWear.Infrastructure.Extensions
         public static IServiceCollection AddInfrastructure(this IServiceCollection services)
         {
             services.AddTransient<IClothingRepository, ClothingRepository>();
+            services.AddTransient<IRefreshTokenRepository, RefreshTokenRepository>();
+            services.AddHttpContextAccessor();
+            services.AddScoped<IUserProvider, UserProvider>();
 
             services.AddDatabase();
             services.AddServices();
@@ -31,7 +36,7 @@ namespace HiveWear.Infrastructure.Extensions
 
         private static IServiceCollection AddDatabase(this IServiceCollection services)
         {
-            string databasePath = "C:\\Users\\Djurr\\source\\repos\\HiveWear.Api\\HiveWear.Infrastructure\\app.db";
+            string databasePath = "C:\\Users\\DjurredeJong\\source\\repos\\Djurq\\HiveWear.Api\\HiveWear.Infrastructure\\app.db";
 
             services.AddDbContext<HiveWearDbContext>(options => options.UseSqlite($"Data Source={databasePath}"));
 

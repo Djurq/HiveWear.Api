@@ -1,6 +1,6 @@
-﻿using HiveWear.Domain.Models;
+﻿using HiveWear.Domain.Entities;
 
-namespace HiveWear.Domain.Interfaces.Repositories
+namespace HiveWear.Application.Interfaces.Repositories
 {
     public interface IClothingRepository
     {

@@ -1,6 +1,6 @@
-﻿namespace HiveWear.Domain.Models
+﻿namespace HiveWear.Application.Authentication.Requests
 {
-    public sealed class RegisterModel
+    public sealed class RegisterRequest
     {
         public string UserName { get; set; } = string.Empty;
         public string Email { get; set; } = string.Empty;

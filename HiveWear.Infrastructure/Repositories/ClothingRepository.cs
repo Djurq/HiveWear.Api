@@ -1,5 +1,5 @@
-﻿using HiveWear.Domain.Interfaces.Repositories;
-using HiveWear.Domain.Models;
+﻿using HiveWear.Application.Interfaces.Repositories;
+using HiveWear.Domain.Entities;
 using HiveWear.Infrastructure.Database;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;

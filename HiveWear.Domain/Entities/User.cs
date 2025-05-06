@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 
-namespace HiveWear.Domain.Models
+namespace HiveWear.Domain.Entities
 {
     public sealed class User : IdentityUser
     {

@@ -22,9 +22,10 @@ try
     {
         options.AddPolicy("AllowAllOrigins", builder =>
         {
-            builder.AllowAnyOrigin() // Allow any origin
+            builder.WithOrigins("http://localhost:8080") // Allow localhost:8080
                    .AllowAnyHeader()
-                   .AllowAnyMethod();
+                   .AllowAnyMethod()
+                   .AllowCredentials();
         });
     });
 
@@ -37,7 +38,7 @@ try
     app.UseMiddleware<RequestResponseLoggingMiddleware>();
     app.UseMiddleware<ExceptionHandlingMiddleware>();
 
-    app.UseHttpsRedirection();
+/*    app.UseHttpsRedirection();*/
 
     app.UseAuthentication();
     app.UseAuthorization();

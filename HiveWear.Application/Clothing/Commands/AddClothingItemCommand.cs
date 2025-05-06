@@ -1,5 +1,5 @@
-﻿using HiveWear.Domain.Interfaces.Repositories;
-using HiveWear.Domain.Models;
+﻿using HiveWear.Application.Interfaces.Repositories;
+using HiveWear.Domain.Entities;
 using MediatR;
 
 namespace HiveWear.Application.Clothing.Commands

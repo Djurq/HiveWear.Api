@@ -1,13 +1,14 @@
 ﻿using HiveWear.Application.Clothing.Commands;
 using HiveWear.Application.Clothing.Queries;
 using HiveWear.Application.Images.Commands;
-using HiveWear.Domain.Models;
+using HiveWear.Domain.Entities;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace HiveWear.Api.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class ClothingController(IMediator mediator) : ControllerBase
