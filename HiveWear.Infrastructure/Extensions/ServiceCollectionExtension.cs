@@ -27,7 +27,7 @@ namespace HiveWear.Infrastructure.Extensions
             services.AddHttpContextAccessor();
             services.AddScoped<IUserProvider, UserProvider>();
 
-            services.AddDatabase();
+/*            services.AddDatabase();*/
             services.AddServices();
             services.AddAuthentication();
 
