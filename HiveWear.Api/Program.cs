@@ -5,12 +5,12 @@ using Serilog;
 
 try
 {
-    Log.Logger = new LoggerConfiguration()
+/*    Log.Logger = new LoggerConfiguration()
         .MinimumLevel.Information()
         .WriteTo.File("Logs/log-.txt", rollingInterval: RollingInterval.Day)
         .CreateLogger();
 
-    Log.Information("Starting up the app...");
+    Log.Information("Starting up the app...");*/
 
     WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
