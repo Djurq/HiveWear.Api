@@ -36,7 +36,7 @@ try
 
     app.UseCors("AllowCredentialsPolicy");
 
-    app.UseMiddleware<RequestResponseLoggingMiddleware>();
+    //app.UseMiddleware<RequestResponseLoggingMiddleware>();
     app.UseMiddleware<ExceptionHandlingMiddleware>();
 
     app.UseHttpsRedirection();
