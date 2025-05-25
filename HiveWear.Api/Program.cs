@@ -1,6 +1,8 @@
 using HiveWear.Api.Middlewares;
 using HiveWear.Application.Extensions;
+using HiveWear.Infrastructure.Database;
 using HiveWear.Infrastructure.Extensions;
+using Microsoft.EntityFrameworkCore;
 using Serilog;
 
 try
@@ -32,6 +34,13 @@ try
     builder.Host.UseSerilog();
 
     WebApplication app = builder.Build();
+
+
+    using (IServiceScope scope = app.Services.CreateScope())
+    {
+        HiveWearDbContext db = scope.ServiceProvider.GetRequiredService<HiveWearDbContext>();
+        db.Database.Migrate();
+    }
 
     app.UseCors("AllowAllOrigins");
 
