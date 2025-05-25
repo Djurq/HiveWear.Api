@@ -20,12 +20,13 @@ try
 
     builder.Services.AddCors(options =>
     {
-        options.AddPolicy("AllowAllOrigins", builder =>
+        options.AddPolicy("AllowCredentialsPolicy", builder =>
         {
-            builder.WithOrigins("https://red-moss-0cb083103.6.azurestaticapps.net")
-                   .AllowAnyHeader()
-                   .AllowAnyMethod()
-                   .AllowCredentials();
+            builder
+                .WithOrigins("https://red-moss-0cb083103.6.azurestaticapps.net") // specify allowed origins explicitly
+                .AllowAnyHeader()
+                .AllowAnyMethod()
+                .AllowCredentials(); // enable credentials
         });
     });
 
@@ -33,7 +34,7 @@ try
 
     WebApplication app = builder.Build();
 
-    app.UseCors("AllowAllOrigins");
+    app.UseCors("AllowCredentialsPolicy");
 
     app.UseMiddleware<RequestResponseLoggingMiddleware>();
     app.UseMiddleware<ExceptionHandlingMiddleware>();
