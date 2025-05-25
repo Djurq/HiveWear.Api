@@ -20,25 +20,23 @@ namespace HiveWear.Infrastructure.Extensions
 {
     public static class ServiceCollectionExtension
     {
-        public static IServiceCollection AddInfrastructure(this IServiceCollection services)
+        public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
         {
             services.AddTransient<IClothingRepository, ClothingRepository>();
             services.AddTransient<IRefreshTokenRepository, RefreshTokenRepository>();
             services.AddHttpContextAccessor();
             services.AddScoped<IUserProvider, UserProvider>();
 
-            services.AddDatabase();
+            services.AddDatabase(configuration);
             services.AddServices();
             services.AddAuthentication();
 
             return services;
         }
 
-        private static IServiceCollection AddDatabase(this IServiceCollection services)
+        private static IServiceCollection AddDatabase(this IServiceCollection services, IConfiguration configuration)
         {
-            string databasePath = "C:\\Users\\Djurr\\source\\repos\\HiveWear.Api\\HiveWear.Infrastructure\\app.db";
-
-            services.AddDbContext<HiveWearDbContext>(options => options.UseSqlite($"Data Source={databasePath}"));
+            services.AddDbContext<HiveWearDbContext>(options => options.UseSqlite(configuration.GetConnectionString("DefaultConnection")));
 
             services.AddIdentity<User, IdentityRole>()
                     .AddEntityFrameworkStores<HiveWearDbContext>()
