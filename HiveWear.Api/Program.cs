@@ -36,11 +36,11 @@ try
     WebApplication app = builder.Build();
 
 
-    using (IServiceScope scope = app.Services.CreateScope())
+/*    using (IServiceScope scope = app.Services.CreateScope())
     {
         HiveWearDbContext db = scope.ServiceProvider.GetRequiredService<HiveWearDbContext>();
         db.Database.Migrate();
-    }
+    }*/
 
     app.UseCors("AllowAllOrigins");
 
