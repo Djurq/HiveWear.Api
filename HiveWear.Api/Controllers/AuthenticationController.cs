@@ -104,9 +104,9 @@ namespace HiveWear.Api.Controllers
         {
             CookieOptions cookieOptions = new()
             {
-                HttpOnly = false,
+                HttpOnly = true,
                 Secure = true,
-                SameSite = SameSiteMode.Strict,
+                SameSite = SameSiteMode.None, // <== belangrijk voor cross-origin cookies
                 Expires = DateTime.UtcNow.AddDays(7)
             };
 
