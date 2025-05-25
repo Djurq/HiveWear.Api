@@ -30,7 +30,7 @@ jobs:
         run: dotnet restore
 
       - name: Run EF Core migrations
-        run: dotnet ef database update --project src/HiveWear.Infrastructure/HiveWear.Infrastructure.csproj
+        run: dotnet ef database update --project HiveWear.Infrastructure/HiveWear.Infrastructure.csproj
         env:
           ConnectionStrings__DefaultConnection: ${{ secrets.PRODUCTION_CONNECTION_STRING }}
           ASPNETCORE_ENVIRONMENT: Production
