@@ -1,4 +1,5 @@
 ﻿using HiveWear.Domain.Entities;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
@@ -28,6 +29,21 @@ namespace HiveWear.Infrastructure.Database
             }
 
             return await base.SaveChangesAsync(cancellationToken);
+        }
+
+        protected override void OnModelCreating(ModelBuilder builder)
+        {
+            base.OnModelCreating(builder);
+
+            builder.Entity<User>(entity =>
+            {
+                entity.Property(e => e.Id).HasColumnType("nvarchar(450)");
+            });
+
+            builder.Entity<IdentityRole>(entity =>
+            {
+                entity.Property(e => e.Id).HasColumnType("nvarchar(450)");
+            });
         }
     }
 }
