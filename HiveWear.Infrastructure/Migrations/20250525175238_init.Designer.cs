@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace HiveWear.Infrastructure.Migrations
 {
     [DbContext(typeof(HiveWearDbContext))]
-    [Migration("20250525174818_fix-ids")]
-    partial class fixids
+    [Migration("20250525175238_init")]
+    partial class init
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
