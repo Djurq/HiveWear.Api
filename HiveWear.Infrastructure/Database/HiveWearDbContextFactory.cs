@@ -1,16 +1,25 @@
 ﻿using Microsoft.EntityFrameworkCore.Design;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 
 namespace HiveWear.Infrastructure.Database
 {
-    public sealed class HiveWearDbContextFactory : IDesignTimeDbContextFactory<HiveWearDbContext>
+    public class HiveWearDbContextFactory : IDesignTimeDbContextFactory<HiveWearDbContext>
     {
         public HiveWearDbContext CreateDbContext(string[] args)
         {
-            string databasePath = "C:\\Users\\DjurredeJong\\source\\repos\\Djurq\\HiveWear.Api\\HiveWear.Infrastructure\\app.db";
+            var basePath = Directory.GetCurrentDirectory();
 
-            DbContextOptionsBuilder<HiveWearDbContext> optionsBuilder = new();
-            optionsBuilder.UseSqlite($"Data Source={databasePath}");
+            IConfiguration configuration = new ConfigurationBuilder()
+                .SetBasePath(basePath)
+                .AddJsonFile("appsettings.Production.json", optional: true)
+                .AddEnvironmentVariables()
+                .Build();
+
+            var optionsBuilder = new DbContextOptionsBuilder<HiveWearDbContext>();
+            var connectionString = configuration.GetConnectionString("DefaultConnection");
+
+            optionsBuilder.UseSqlServer(connectionString);
 
             return new HiveWearDbContext(optionsBuilder.Options);
         }

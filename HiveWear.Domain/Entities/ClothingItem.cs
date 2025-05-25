@@ -19,5 +19,9 @@ namespace HiveWear.Domain.Entities
         public Season? Season { get; set; }
         public DateTimeOffset DateCreated { get; set; }
         public DateTimeOffset DateUpdated { get; set;}
+
+        public string? UserId { get; set; } = string.Empty;
+
+        public User? User { get; set; }
     }
 }

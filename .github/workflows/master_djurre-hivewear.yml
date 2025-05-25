@@ -13,7 +13,7 @@ jobs:
   build:
     runs-on: windows-latest
     permissions:
-      contents: read #This is required for actions/checkout
+      contents: read
 
     steps:
       - uses: actions/checkout@v4
@@ -22,6 +22,18 @@ jobs:
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: '9.x'
+
+      - name: Install EF Tools
+        run: dotnet tool install --global dotnet-ef
+
+      - name: Restore dependencies
+        run: dotnet restore
+
+      - name: Run EF Core migrations
+        run: dotnet ef database update --project HiveWear.Infrastructure/HiveWear.Infrastructure.csproj
+        env:
+          ConnectionStrings__DefaultConnection: ${{ secrets.PRODUCTION_CONNECTION_STRING }}
+          ASPNETCORE_ENVIRONMENT: Production
 
       - name: Build with dotnet
         run: dotnet build --configuration Release
@@ -41,13 +53,13 @@ jobs:
     environment:
       name: 'Production'
       url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
-    
+
     steps:
       - name: Download artifact from build job
         uses: actions/download-artifact@v4
         with:
           name: .net-app
-      
+
       - name: Deploy to Azure Web App
         id: deploy-to-webapp
         uses: azure/webapps-deploy@v3
