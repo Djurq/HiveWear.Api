@@ -22,7 +22,7 @@ try
     {
         options.AddPolicy("AllowAllOrigins", builder =>
         {
-            builder.WithOrigins("http://localhost:8080") // Allow localhost:8080
+            builder.WithOrigins("https://red-moss-0cb083103.6.azurestaticapps.net")
                    .AllowAnyHeader()
                    .AllowAnyMethod()
                    .AllowCredentials();
