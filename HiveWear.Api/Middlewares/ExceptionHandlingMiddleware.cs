@@ -17,6 +17,9 @@ namespace HiveWear.Api.Middlewares
                 context.Response.StatusCode = StatusCodes.Status400BadRequest;
                 context.Response.ContentType = "application/json";
 
+                context.Response.Headers["Access-Control-Allow-Origin"] = "https://red-moss-0cb083103.6.azurestaticapps.net";
+                context.Response.Headers["Access-Control-Allow-Credentials"] = "true";
+
                 var errors = ex.Errors.Select(e => new { e.PropertyName, e.ErrorMessage });
                 var response = new { Message = "Validation failed", Errors = errors };
 
