@@ -38,7 +38,7 @@ try
     app.UseMiddleware<RequestResponseLoggingMiddleware>();
     app.UseMiddleware<ExceptionHandlingMiddleware>();
 
-/*    app.UseHttpsRedirection();*/
+    app.UseHttpsRedirection();
 
     app.UseAuthentication();
     app.UseAuthorization();

@@ -104,8 +104,8 @@ namespace HiveWear.Api.Controllers
         {
             CookieOptions cookieOptions = new()
             {
-                HttpOnly = true,
-                Secure = false,
+                HttpOnly = false,
+                Secure = true,
                 SameSite = SameSiteMode.Strict,
                 Expires = DateTime.UtcNow.AddDays(7)
             };
