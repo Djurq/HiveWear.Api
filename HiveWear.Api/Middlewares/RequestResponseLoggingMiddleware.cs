@@ -1,4 +1,6 @@
-﻿using System.Text;
+﻿using Serilog;
+using System.Diagnostics;
+using System.Text;
 
 namespace HiveWear.Api.Middlewares
 {
@@ -15,40 +17,26 @@ namespace HiveWear.Api.Middlewares
 
         public async Task Invoke(HttpContext context)
         {
-            context.Request.EnableBuffering();
-            var requestBody = await ReadStreamAsync(context.Request.Body);
-            context.Request.Body.Position = 0; // Reset stream na lezen
+            var sw = Stopwatch.StartNew();
+            var request = context.Request;
+            var originalBody = context.Response.Body;
 
-            _logger.LogInformation("Incoming Request: {method} {url} \nHeaders: {headers}\nBody: {body}",
-                context.Request.Method,
-                context.Request.Path,
-                context.Request.Headers.ToDictionary(h => h.Key, h => h.Value.ToString()),
-                requestBody);
+            using var memoryStream = new MemoryStream();
+            context.Response.Body = memoryStream;
 
-            var originalResponseBody = context.Response.Body;
-            using var newResponseBody = new MemoryStream();
-            context.Response.Body = newResponseBody;
+            await _next(context);
 
-            await _next(context); // Verwerk de request
+            sw.Stop();
+            memoryStream.Seek(0, SeekOrigin.Begin);
 
-            context.Response.Body.Seek(0, SeekOrigin.Begin);
-            var responseBody = await new StreamReader(context.Response.Body).ReadToEndAsync();
-            context.Response.Body.Seek(0, SeekOrigin.Begin);
-
-            _logger.LogInformation("Response Status: {statusCode}\nBody: {body}",
+            Log.Information("HTTP {Method} {Path} → {StatusCode} in {Elapsed}ms",
+                request.Method,
+                request.Path,
                 context.Response.StatusCode,
-                responseBody);
+                sw.ElapsedMilliseconds);
 
-            // Zet de response terug naar de echte output stream
-            await newResponseBody.CopyToAsync(originalResponseBody);
-        }
-
-        private async Task<string> ReadStreamAsync(Stream stream)
-        {
-            using var reader = new StreamReader(stream, Encoding.UTF8, leaveOpen: true);
-            return await reader.ReadToEndAsync();
+            memoryStream.Seek(0, SeekOrigin.Begin);
+            await memoryStream.CopyToAsync(originalBody);
         }
     }
-
-
 }

@@ -5,6 +5,7 @@ using HiveWear.Application.Authentication.Responses;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Serilog;
 
 namespace HiveWear.Api.Controllers
 {
@@ -40,6 +41,8 @@ namespace HiveWear.Api.Controllers
         [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody] RegisterRequest registerRequest)
         {
+            Log.Information("Register request received: {@RegisterRequest}", registerRequest);
+
             if (registerRequest is null)
             {
                 return BadRequest("Register model cannot be null.");
@@ -105,7 +108,7 @@ namespace HiveWear.Api.Controllers
             CookieOptions cookieOptions = new()
             {
                 HttpOnly = true,
-                Secure = true,
+                Secure = false,
                 SameSite = SameSiteMode.None, // <== belangrijk voor cross-origin cookies
                 Expires = DateTime.UtcNow.AddDays(7)
             };
