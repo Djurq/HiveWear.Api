@@ -3,7 +3,6 @@ using HiveWear.Application.Interfaces.Repositories;
 using HiveWear.Application.Interfaces.Services;
 using HiveWear.Domain.Constants;
 using HiveWear.Domain.Entities;
-using HiveWear.Domain.Interfaces.Services;
 using HiveWear.Infrastructure.Database;
 using HiveWear.Infrastructure.Provider;
 using HiveWear.Infrastructure.Repositories;
@@ -53,7 +52,6 @@ namespace HiveWear.Infrastructure.Extensions
 
         private static IServiceCollection AddServices(this IServiceCollection services)
         {
-            services.AddTransient<IFileStorageService, FileStorageService>();
             services.AddTransient<IAuthenticationService, AuthenticationService>();
             services.AddTransient<IJwtTokenService, JwtTokenService>();
 
