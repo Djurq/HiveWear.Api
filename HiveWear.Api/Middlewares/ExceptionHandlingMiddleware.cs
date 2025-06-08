@@ -14,11 +14,14 @@ namespace HiveWear.Api.Middlewares
             }
             catch (ValidationException ex)
             {
-                context.Response.StatusCode = StatusCodes.Status400BadRequest;
-                context.Response.ContentType = "application/json";
-
+                // Set CORS headers before writing the response
                 context.Response.Headers["Access-Control-Allow-Origin"] = "https://red-moss-0cb083103.6.azurestaticapps.net";
                 context.Response.Headers["Access-Control-Allow-Credentials"] = "true";
+                context.Response.Headers["Access-Control-Allow-Headers"] = "Content-Type, Authorization";
+                context.Response.Headers["Access-Control-Allow-Methods"] = "GET, POST, PUT, DELETE, OPTIONS";
+
+                context.Response.StatusCode = StatusCodes.Status400BadRequest;
+                context.Response.ContentType = "application/json";
 
                 var errors = ex.Errors.Select(e => new { e.PropertyName, e.ErrorMessage });
                 var response = new { Message = "Validation failed", Errors = errors };

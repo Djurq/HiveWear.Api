@@ -58,8 +58,31 @@ namespace HiveWear.Infrastructure.Services
                 Email = registerRequest.Email
             };
 
-            IdentityResult result = await _userManager.CreateAsync(user, registerRequest.Password).ConfigureAwait(false);
-            User? generatedUser = await _userManager.FindByEmailAsync(user.Email).ConfigureAwait(false);
+            IdentityResult result;
+            try
+            {
+                result = await _userManager.CreateAsync(user, registerRequest.Password).ConfigureAwait(false);
+            }
+            catch (Exception ex)
+            {
+                throw new InvalidOperationException("An error occurred while creating the user.", ex);
+            }
+
+            if (!result.Succeeded)
+            {
+                var errors = string.Join("; ", result.Errors.Select(e => e.Description));
+                throw new InvalidOperationException($"User registration failed: {errors}");
+            }
+
+            User? generatedUser;
+            try
+            {
+                generatedUser = await _userManager.FindByEmailAsync(user.Email).ConfigureAwait(false);
+            }
+            catch (Exception ex)
+            {
+                throw new InvalidOperationException("An error occurred while retrieving the created user.", ex);
+            }
 
             if (result.Succeeded && generatedUser is not null)
             {
