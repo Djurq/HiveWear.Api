@@ -12,14 +12,14 @@ namespace HiveWear.Infrastructure.Database
 
             IConfiguration configuration = new ConfigurationBuilder()
                 .SetBasePath(basePath)
-                .AddJsonFile("appsettings.Production.json", optional: true)
+                .AddJsonFile("appsettings.Development.json", optional: true)
                 .AddEnvironmentVariables()
                 .Build();
 
             var optionsBuilder = new DbContextOptionsBuilder<HiveWearDbContext>();
             var connectionString = configuration.GetConnectionString("DefaultConnection");
 
-            optionsBuilder.UseSqlServer(connectionString);
+            optionsBuilder.UseSqlite(connectionString);
 
             return new HiveWearDbContext(optionsBuilder.Options);
         }

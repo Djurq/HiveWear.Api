@@ -35,13 +35,13 @@ namespace HiveWear.Infrastructure.Extensions
 
         private static IServiceCollection AddDatabase(this IServiceCollection services, IConfiguration configuration)
         {
-            #if DEBUG
+            
                         services.AddDbContext<HiveWearDbContext>(options =>
                             options.UseSqlite(configuration.GetConnectionString("DefaultConnection")));
-            #else
-                        services.AddDbContext<HiveWearDbContext>(options =>
-                            options.UseSqlServer(configuration.GetConnectionString("DefaultConnection")));
-            #endif
+            
+/*                        services.AddDbContext<HiveWearDbContext>(options =>
+                            options.UseSqlServer(configuration.GetConnectionString("DefaultConnection")));*/
+            
 
             services.AddIdentity<User, IdentityRole>()
                     .AddEntityFrameworkStores<HiveWearDbContext>()
