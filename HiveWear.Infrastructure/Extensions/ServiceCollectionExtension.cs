@@ -8,6 +8,7 @@ using HiveWear.Infrastructure.Provider;
 using HiveWear.Infrastructure.Repositories;
 using HiveWear.Infrastructure.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -54,32 +55,6 @@ namespace HiveWear.Infrastructure.Extensions
         {
             services.AddTransient<IAuthenticationService, AuthenticationService>();
             services.AddTransient<IJwtTokenService, JwtTokenService>();
-
-            return services;
-        }
-
-        private static IServiceCollection AddAuthentication(this IServiceCollection services)
-        {
-            ServiceProvider serviceProvider = services.BuildServiceProvider();
-            IConfiguration configuration = serviceProvider.GetRequiredService<IConfiguration>();
-            string? secretKey = configuration[JwtConstants.SecretKey];
-
-            if (string.IsNullOrEmpty(secretKey))
-            {
-                throw new ArgumentNullException("Secret key cannot be null or empty.", nameof(configuration));
-            }
-
-            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-                    .AddJwtBearer(options =>
-                    {
-                        options.TokenValidationParameters = new TokenValidationParameters
-                        {
-                            ValidateIssuer = false,
-                            ValidateAudience = false,
-                            ValidateLifetime = true,
-                            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey))
-                        };
-                    });
 
             return services;
         }

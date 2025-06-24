@@ -109,7 +109,7 @@ namespace HiveWear.Api.Controllers
             {
                 HttpOnly = true,
                 Secure = false,
-                SameSite = SameSiteMode.None, // <== belangrijk voor cross-origin cookies
+                SameSite = SameSiteMode.Lax,
                 Expires = DateTime.UtcNow.AddDays(7)
             };
 

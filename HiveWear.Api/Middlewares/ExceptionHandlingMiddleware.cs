@@ -14,7 +14,7 @@ namespace HiveWear.Api.Middlewares
             }
             catch (ValidationException ex)
             {
-                // Set CORS headers before writing the response
+/*                // Set CORS headers before writing the response
                 context.Response.Headers["Access-Control-Allow-Origin"] = "https://red-moss-0cb083103.6.azurestaticapps.net";
                 context.Response.Headers["Access-Control-Allow-Credentials"] = "true";
                 context.Response.Headers["Access-Control-Allow-Headers"] = "Content-Type, Authorization";
@@ -26,7 +26,7 @@ namespace HiveWear.Api.Middlewares
                 var errors = ex.Errors.Select(e => new { e.PropertyName, e.ErrorMessage });
                 var response = new { Message = "Validation failed", Errors = errors };
 
-                await context.Response.WriteAsJsonAsync(response);
+                await context.Response.WriteAsJsonAsync(response);*/
             }
         }
     }

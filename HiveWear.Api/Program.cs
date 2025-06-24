@@ -1,7 +1,10 @@
 using HiveWear.Api.Middlewares;
 using HiveWear.Application.Extensions;
 using HiveWear.Infrastructure.Extensions;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
 using Serilog;
+using System.Text;
 
 try
 {
@@ -21,6 +24,32 @@ try
     builder.Services.AddControllers();
     builder.Services.AddApplication();
     builder.Services.AddInfrastructure(builder.Configuration);
+
+    builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
+    {
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = false,
+            ValidateAudience = false,
+            ValidateLifetime = false,
+            ValidateIssuerSigningKey = true,
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("super_secret_key_12345dniuqnweqnwlkdnlkcbioyweofawpefnksdjbfpihfpaenrf"))
+        };
+
+        options.Events = new JwtBearerEvents
+        {
+            OnChallenge = context =>
+            {
+                context.HandleResponse();
+                context.Response.StatusCode = 401;
+                context.Response.ContentType = "application/json";
+                return context.Response.WriteAsync("{\"error\": \"Unauthorized\"}");
+            }
+        };
+    });
+
+    builder.Services.AddAuthorization();
 
     Log.Information("Starting up the app...");
     Log.Information("Serilog initialized at {Time}", DateTime.UtcNow);
@@ -65,7 +94,7 @@ try
         app.UseCors("DebugAllowLocalhost");
     }
 
-    app.UseAuthentication();
+    app.UseAuthentication(); 
     app.UseAuthorization();
 
     app.MapControllers();
